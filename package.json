@@ -10,6 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@walletconnect/react-native-compat": "^2.9.2",
+    "@walletconnect/web3wallet": "^1.8.8",
     "react": "18.2.0",
     "react-native": "0.72.3"
   },
