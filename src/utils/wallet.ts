@@ -1,21 +1,8 @@
-import { Core } from '@walletconnect/core';
 import { ICore } from '@walletconnect/types';
 import { Web3Wallet } from '@walletconnect/web3wallet';
 
-// @ts-expect-error - env is a virtualised module via Babel config.
-import { ENV_PROJECT_ID, ENV_RELAY_URL } from '@env';
-
-let core: ICore;
-
-export const createWeb3Wallet = async () => {
-  core = new Core({
-    // @notice: If you want the debugger / logs
-    // logger: 'debug',
-    projectId: ENV_PROJECT_ID,
-    relayUrl: ENV_RELAY_URL,
-  });
-
-  const web3wallet = await Web3Wallet.init({
+export const createWeb3Wallet = async (core: ICore) =>
+  await Web3Wallet.init({
     core,
     metadata: {
       name: 'Demo React Native Wallet',
@@ -28,8 +15,5 @@ export const createWeb3Wallet = async () => {
     },
   });
 
-  return { web3wallet };
-};
-
-export const pair = async ({ uri }: { uri: string }) =>
+export const pair = async ({ core, uri }: { core: ICore; uri: string }) =>
   await core.pairing.pair({ uri });
