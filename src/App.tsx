@@ -1,26 +1,14 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
 
+import { WalletProvider } from './context/walletContext';
 import { HomeScreen } from './screens/HomeScreen';
 
-export const App = (): JSX.Element => {
-  const isDarkMode = useColorScheme() === 'dark';
+import '../polyfills';
 
+export const App = (): JSX.Element => {
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+    <WalletProvider>
       <HomeScreen />
-    </SafeAreaView>
+    </WalletProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-  },
-});
