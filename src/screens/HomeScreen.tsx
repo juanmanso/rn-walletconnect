@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -14,9 +14,23 @@ import { useWalletContext } from '../context/walletContext';
 export const HomeScreen = (): JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
   const { initWallet, wallet } = useWalletContext();
+  const [loadingWallet, setLoadingWallet] = useState(false);
 
   const isWalletInit = !!wallet;
-  const handleOnPress = isWalletInit ? undefined : initWallet;
+  const handleOnPress = async () => {
+    if (isWalletInit) {
+      return;
+    }
+
+    setLoadingWallet(true);
+    await initWallet().finally(() => setLoadingWallet(false));
+  };
+
+  const buttonText = isWalletInit
+    ? 'Wallet Ready 🚀'
+    : loadingWallet
+    ? 'Wallet initiating...'
+    : 'Press to setup wallet';
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -24,9 +38,7 @@ export const HomeScreen = (): JSX.Element => {
       <View style={styles.container}>
         <Text>Hello World!</Text>
         <TouchableOpacity onPress={handleOnPress} style={styles.button}>
-          <Text style={styles.whiteText}>
-            {isWalletInit ? 'Wallet Ready' : 'Wallet initiating...'}
-          </Text>
+          <Text style={styles.whiteText}>{buttonText}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
