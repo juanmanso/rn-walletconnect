@@ -1,18 +1,9 @@
 import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { useWalletContext } from '../context/walletContext';
 
 export const HomeScreen = (): JSX.Element => {
-  const isDarkMode = useColorScheme() === 'dark';
   const { initWallet, wallet } = useWalletContext();
   const [loadingWallet, setLoadingWallet] = useState(false);
 
@@ -33,15 +24,12 @@ export const HomeScreen = (): JSX.Element => {
     : 'Press to setup wallet';
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <View style={styles.container}>
-        <Text>Hello World!</Text>
-        <TouchableOpacity onPress={handleOnPress} style={styles.button}>
-          <Text style={styles.whiteText}>{buttonText}</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Text>Hello World!</Text>
+      <TouchableOpacity onPress={handleOnPress} style={styles.button}>
+        <Text style={styles.whiteText}>{buttonText}</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 

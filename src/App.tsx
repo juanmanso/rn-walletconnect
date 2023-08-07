@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { WalletProvider } from './context/walletContext';
-import { HomeScreen } from './screens/HomeScreen';
+import { Navigation } from './navigation';
 
 import '../polyfills';
 
 export const App = (): JSX.Element => {
   return (
     <WalletProvider>
-      <HomeScreen />
+      <Navigation />
     </WalletProvider>
   );
 };
