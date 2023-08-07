@@ -5,13 +5,16 @@ import {
   createStackNavigator,
   StackNavigationProp,
   StackScreenProps,
+  TransitionPresets,
 } from '@react-navigation/stack';
 
 import { RootNavigator } from './utils';
 import { HomeScreen } from '../screens/HomeScreen';
+import { OnboardingScreen } from '../screens/OnboardingScreen';
 
 export type RootStackParamList = {
   Main: undefined;
+  Onboarding: undefined;
 };
 
 export type RootStackNavigationProps<Route extends keyof RootStackParamList> =
@@ -40,7 +43,8 @@ export const Navigation = () => {
 const AppNavigator = () => {
   return (
     <Stack.Navigator
-      initialRouteName={'Main'}
+      // TODO: check if wallet was previously initiated
+      initialRouteName={'Onboarding'}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen
@@ -49,6 +53,14 @@ const AppNavigator = () => {
         options={{
           gestureEnabled: false,
           title: 'Main',
+        }}
+      />
+      <Stack.Screen
+        name="Onboarding"
+        component={OnboardingScreen}
+        options={{
+          ...TransitionPresets.ModalPresentationIOS,
+          title: 'Onboarding',
         }}
       />
     </Stack.Navigator>
