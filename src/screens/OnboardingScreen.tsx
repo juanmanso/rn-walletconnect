@@ -4,9 +4,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useWalletContext } from '../context/walletContext';
 import { RootStackScreenProps } from '../navigation';
 
-export const OnboardingScreen = ({}: PropsWithChildren<
-  RootStackScreenProps<'Onboarding'>
->) => {
+export const OnboardingScreen = ({
+  navigation,
+}: PropsWithChildren<RootStackScreenProps<'Onboarding'>>) => {
   const { initWallet, wallet } = useWalletContext();
   const [loadingWallet, setLoadingWallet] = useState(false);
 
@@ -17,7 +17,9 @@ export const OnboardingScreen = ({}: PropsWithChildren<
     }
 
     setLoadingWallet(true);
-    await initWallet().finally(() => setLoadingWallet(false));
+    await initWallet()
+      .then(() => setLoadingWallet(false))
+      .finally(() => navigation.navigate('Main'));
   };
 
   const buttonText = isWalletInit
