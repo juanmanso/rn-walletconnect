@@ -1,5 +1,4 @@
 import React from 'react';
-import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import {
   createStackNavigator,
@@ -26,16 +25,9 @@ export type RootStackScreenProps<Route extends keyof RootStackParamList> =
 const Stack = createStackNavigator<RootStackParamList>();
 
 export const Navigation = () => {
-  const isDarkMode = useColorScheme();
   return (
     <NavigationContainer ref={RootNavigator.ref}>
-      <SafeAreaView>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          translucent
-        />
-        <AppNavigator />
-      </SafeAreaView>
+      <AppNavigator />
     </NavigationContainer>
   );
 };

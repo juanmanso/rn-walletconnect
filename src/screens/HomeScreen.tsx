@@ -1,15 +1,17 @@
 import React, { PropsWithChildren } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+
+import { Content, ThemedText } from '../components/';
 import { RootStackScreenProps } from '../navigation';
 
 export const HomeScreen = ({}: PropsWithChildren<
   RootStackScreenProps<'Main'>
 >): JSX.Element => {
   return (
-    <View style={styles.container}>
-      <Text>Hello World!</Text>
-      <Text>Wallet initiated 🚀</Text>
-    </View>
+    <Content containerStyle={styles.container}>
+      <ThemedText>Hello World!</ThemedText>
+      <ThemedText>Wallet initiated 🚀</ThemedText>
+    </Content>
   );
 };
 

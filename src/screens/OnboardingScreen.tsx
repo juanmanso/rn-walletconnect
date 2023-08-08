@@ -1,8 +1,9 @@
 import React, { PropsWithChildren, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useWalletContext } from '../context/walletContext';
 import { RootStackScreenProps } from '../navigation';
+import { Content, ThemedText } from '../components';
 
 export const OnboardingScreen = ({
   navigation,
@@ -29,19 +30,16 @@ export const OnboardingScreen = ({
     : 'Press to setup wallet';
 
   return (
-    <View style={styles.container}>
-      <Text>Hello World!</Text>
+    <Content containerStyle={styles.container}>
+      <ThemedText>Hello World!</ThemedText>
       <TouchableOpacity onPress={handleOnPress} style={styles.button}>
-        <Text style={styles.whiteText}>{buttonText}</Text>
+        <ThemedText style={styles.whiteText}>{buttonText}</ThemedText>
       </TouchableOpacity>
-    </View>
+    </Content>
   );
 };
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-  },
   container: {
     flex: 1,
     padding: 16,
