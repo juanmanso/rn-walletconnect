@@ -20,7 +20,7 @@ export const Content = ({
   style,
 }: PropsWithChildren<IContentProps>) => {
   const insets = useSafeAreaInsets();
-  const isDarkMode = useColorScheme();
+  const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundColor = isDarkMode ? 'black' : 'white';
 
