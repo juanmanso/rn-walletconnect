@@ -8,10 +8,10 @@ import { Content, ThemedText } from '../components';
 export const OnboardingScreen = ({
   navigation,
 }: PropsWithChildren<RootStackScreenProps<'Onboarding'>>) => {
-  const { initWallet, wallet } = useWalletContext();
+  const { initWallet, web3Wallet } = useWalletContext();
   const [loadingWallet, setLoadingWallet] = useState(false);
 
-  const isWalletInit = !!wallet;
+  const isWalletInit = !!web3Wallet;
   const handleOnPress = async () => {
     if (isWalletInit) {
       return;
