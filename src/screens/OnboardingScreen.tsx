@@ -8,7 +8,7 @@ import { Content, ThemedText } from '../components';
 export const OnboardingScreen = ({
   navigation,
 }: PropsWithChildren<RootStackScreenProps<'Onboarding'>>) => {
-  const { initWallet, web3Wallet } = useWalletContext();
+  const { initContext, web3Wallet } = useWalletContext();
   const [loadingWallet, setLoadingWallet] = useState(false);
 
   const isWalletInit = !!web3Wallet;
@@ -18,7 +18,7 @@ export const OnboardingScreen = ({
     }
 
     setLoadingWallet(true);
-    await initWallet()
+    await initContext()
       .then(() => setLoadingWallet(false))
       .finally(() => navigation.navigate('Main'));
   };
