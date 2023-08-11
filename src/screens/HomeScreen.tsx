@@ -3,12 +3,14 @@ import { StyleSheet, View } from 'react-native';
 
 import { Content, ThemedText } from '../components/';
 import { RootStackScreenProps } from '../navigation';
+import { useWalletContext } from '../context/walletContext';
 
 export const HomeScreen = ({}: PropsWithChildren<
   RootStackScreenProps<'Main'>
 >): JSX.Element => {
-  const address = '';
-  const mnemonic = '';
+  const { wallet } = useWalletContext();
+  const address = wallet?.address ?? '';
+  const mnemonic = wallet?.mnemonic.phrase ?? '';
 
   return (
     <Content containerStyle={styles.container}>
