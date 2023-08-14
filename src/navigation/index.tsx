@@ -53,7 +53,7 @@ const AppNavigator = () => {
         name="Onboarding"
         component={OnboardingScreen}
         options={{
-          ...TransitionPresets.ModalPresentationIOS,
+          gestureEnabled: false,
           title: 'Onboarding',
         }}
       />
