@@ -1,13 +1,22 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { RootStackScreenProps } from '../navigation';
 import { Content, ThemedText } from '../components';
 
+type LoadingStates = 'fetchingLocalStorage' | 'logged' | 'yetToOnboard';
+
+const statusTextByState: Record<LoadingStates, string> = {
+  fetchingLocalStorage: "Preppin' the app...",
+  logged: 'Logging in...',
+  yetToOnboard: 'Redirecting to onboarding...',
+};
+
 export const LoadingScreen = ({}: PropsWithChildren<
   RootStackScreenProps<'Loading'>
 >) => {
-  const statusText = "Preppin' the app";
+  const [loadingState, _] = useState<LoadingStates>('fetchingLocalStorage');
+  const statusText = statusTextByState[loadingState];
 
   return (
     <Content containerStyle={styles.container}>
