@@ -10,6 +10,10 @@ import { createCtx } from '.';
 import { createWeb3Wallet } from '../utils/web3';
 import { createWallet } from '../utils/wallet';
 
+interface InitProps {
+  mnemonic?: string;
+}
+
 // State variables only
 interface WalletContextState {
   wallet?: Wallet;
@@ -21,8 +25,8 @@ interface WalletContextState {
 // because it holds any other option or fx
 // that handle the state in some way
 interface WalletContext extends WalletContextState {
-  initContext: (mnemonic?: string) => Promise<void>;
-  initWallet: (mnemonic?: string) => void;
+  initContext: (v?: InitProps) => Promise<void>;
+  initWallet: (v?: InitProps) => void;
 }
 
 const INITIAL_STATE: WalletContextState = {
@@ -40,13 +44,13 @@ const [useContext, WalletContextProvider] =
 export const WalletProvider = ({ children }: PropsWithChildren) => {
   const [state, setState] = useState<WalletContextState>(INITIAL_STATE);
 
-  const initContext = async (mnemonic?: string) =>
+  const initContext = async (props?: InitProps) =>
     await createWeb3Wallet(state.web3Core)
       .then(web3Wallet => setState(prevState => ({ ...prevState, web3Wallet })))
-      .then(() => initWallet(mnemonic));
+      .then(() => initWallet({ mnemonic: props?.mnemonic }));
 
-  const initWallet = (mnemonic?: string) => {
-    const wallet = createWallet(mnemonic);
+  const initWallet = (props?: InitProps) => {
+    const wallet = createWallet(props?.mnemonic);
     setState(prevState => ({ ...prevState, wallet }));
   };
 
