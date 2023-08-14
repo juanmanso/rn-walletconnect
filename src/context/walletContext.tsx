@@ -59,10 +59,14 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
   };
 
   const initContext = async (props?: InitProps) => {
-    await createWeb3Wallet(state.web3Core).then(web3Wallet =>
-      setState(prevState => ({ ...prevState, web3Wallet })),
-    );
-    await initWallet(props);
+    if (!state.web3Wallet) {
+      await createWeb3Wallet(state.web3Core).then(web3Wallet =>
+        setState(prevState => ({ ...prevState, web3Wallet })),
+      );
+    }
+    if (!state.wallet) {
+      await initWallet(props);
+    }
   };
 
   const initWallet = async (props?: InitProps) => {
