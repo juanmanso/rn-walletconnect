@@ -1,9 +1,11 @@
 import React, { PropsWithChildren } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Content, ThemedText } from '../components/';
-import { RootStackScreenProps } from '../navigation';
 import { useWalletContext } from '../context/walletContext';
+import { RootStackScreenProps } from '../navigation';
+import { RootNavigator } from '../navigation/utils';
 
 export const HomeScreen = ({}: PropsWithChildren<
   RootStackScreenProps<'Main'>
@@ -11,6 +13,12 @@ export const HomeScreen = ({}: PropsWithChildren<
   const { wallet } = useWalletContext();
   const address = wallet?.address ?? '';
   const mnemonic = wallet?.mnemonic.phrase ?? '';
+
+  const handleLogOut = async () => {
+    await AsyncStorage.removeItem('mnemonic').then(() =>
+      RootNavigator.navigate('Onboarding'),
+    );
+  };
 
   return (
     <Content containerStyle={styles.container}>
@@ -22,6 +30,12 @@ export const HomeScreen = ({}: PropsWithChildren<
         <ThemedText style={styles.heading}>Wallet info</ThemedText>
         <ThemedText>Address: {address}</ThemedText>
         <ThemedText>Mnemonic phrase: {mnemonic}</ThemedText>
+      </View>
+      <View style={styles.group}>
+        <ThemedText style={styles.heading}>Log Out</ThemedText>
+        <TouchableOpacity onPress={handleLogOut} style={styles.button}>
+          <ThemedText>Press to log out</ThemedText>
+        </TouchableOpacity>
       </View>
     </Content>
   );
@@ -39,5 +53,11 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     fontWeight: '700',
+  },
+  button: {
+    borderRadius: 8,
+    padding: 16,
+    alignSelf: 'flex-start',
+    backgroundColor: '#AFAFAF',
   },
 });
