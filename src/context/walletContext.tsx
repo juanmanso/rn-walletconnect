@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Core } from '@walletconnect/core';
 import { ICore } from '@walletconnect/types';
 import { IWeb3Wallet } from '@walletconnect/web3wallet';
@@ -9,6 +10,11 @@ import { Wallet } from 'ethers';
 import { createCtx } from '.';
 import { createWeb3Wallet } from '../utils/web3';
 import { createWallet } from '../utils/wallet';
+
+interface InitProps {
+  mnemonic?: string;
+  saveInStorage?: boolean;
+}
 
 // State variables only
 interface WalletContextState {
@@ -21,8 +27,8 @@ interface WalletContextState {
 // because it holds any other option or fx
 // that handle the state in some way
 interface WalletContext extends WalletContextState {
-  initContext: (mnemonic?: string) => Promise<void>;
-  initWallet: (mnemonic?: string) => void;
+  initContext: (v?: InitProps) => Promise<void>;
+  initWallet: (v?: InitProps) => Promise<void>;
 }
 
 const INITIAL_STATE: WalletContextState = {
@@ -40,14 +46,33 @@ const [useContext, WalletContextProvider] =
 export const WalletProvider = ({ children }: PropsWithChildren) => {
   const [state, setState] = useState<WalletContextState>(INITIAL_STATE);
 
-  const initContext = async (mnemonic?: string) =>
-    await createWeb3Wallet(state.web3Core)
-      .then(web3Wallet => setState(prevState => ({ ...prevState, web3Wallet })))
-      .then(() => initWallet(mnemonic));
+  // @TODO: use KeyChain storage for improved security
+  const setMnemonic = async (mnemonic?: string) => {
+    if (mnemonic) {
+      try {
+        const value = await AsyncStorage.setItem('mnemonic', mnemonic);
+        return value !== null ? value : undefined;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
-  const initWallet = (mnemonic?: string) => {
-    const wallet = createWallet(mnemonic);
+  const initContext = async (props?: InitProps) => {
+    await createWeb3Wallet(state.web3Core).then(web3Wallet =>
+      setState(prevState => ({ ...prevState, web3Wallet })),
+    );
+    await initWallet(props);
+  };
+
+  const initWallet = async (props?: InitProps) => {
+    const wallet = createWallet(props?.mnemonic);
     setState(prevState => ({ ...prevState, wallet }));
+    if (props?.saveInStorage) {
+      await setMnemonic(
+        props.mnemonic ? props.mnemonic : wallet.mnemonic.phrase,
+      ).catch(err => console.error('Error while setting mnemonic.\n\t' + err));
+    }
   };
 
   return (
