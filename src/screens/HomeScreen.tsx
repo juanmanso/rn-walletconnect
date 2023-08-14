@@ -23,16 +23,16 @@ export const HomeScreen = ({}: PropsWithChildren<
   return (
     <Content containerStyle={styles.container}>
       <View style={styles.group}>
-        <ThemedText style={styles.heading}>Hello World!</ThemedText>
+        <ThemedText type="H1">Hello World!</ThemedText>
         <ThemedText>Wallet initiated 🚀</ThemedText>
       </View>
       <View style={styles.group}>
-        <ThemedText style={styles.heading}>Wallet info</ThemedText>
+        <ThemedText type="H1">Wallet info</ThemedText>
         <ThemedText>Address: {address}</ThemedText>
         <ThemedText>Mnemonic phrase: {mnemonic}</ThemedText>
       </View>
       <View style={styles.group}>
-        <ThemedText style={styles.heading}>Log Out</ThemedText>
+        <ThemedText type="H1">Log Out</ThemedText>
         <TouchableOpacity onPress={handleLogOut} style={styles.button}>
           <ThemedText>Press to log out</ThemedText>
         </TouchableOpacity>
@@ -49,10 +49,6 @@ const styles = StyleSheet.create({
   },
   group: {
     gap: 16,
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: '700',
   },
   button: {
     borderRadius: 8,
