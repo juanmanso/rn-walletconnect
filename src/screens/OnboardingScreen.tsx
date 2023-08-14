@@ -56,7 +56,11 @@ export const OnboardingScreen = ({
   return (
     <Content containerStyle={styles.container}>
       <ThemedText type="H1">Hello World!</ThemedText>
-      <TouchableOpacity onPress={handleRememberMe} style={styles.row}>
+      <TouchableOpacity
+        disabled={isInit || loadingWallet}
+        onPress={handleRememberMe}
+        style={styles.row}
+      >
         <View
           style={[styles.box, shouldRememberUser && styles.blueBackgroundColor]}
         />
@@ -77,6 +81,7 @@ export const OnboardingScreen = ({
         ]}
       />
       <TouchableOpacity
+        disabled={isInit || loadingWallet}
         onPress={loginWithMnemonic}
         style={[styles.button, { backgroundColor: '#AFAFAF' }]}
       >
