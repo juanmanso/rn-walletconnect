@@ -1,8 +1,11 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { isValidMnemonic } from 'ethers/lib/utils';
 
 import { RootStackScreenProps } from '../navigation';
 import { Content, ThemedText } from '../components';
+import { useWalletContext } from '../context/walletContext';
 
 type LoadingStates = 'fetchingLocalStorage' | 'logged' | 'yetToOnboard';
 
@@ -16,13 +19,23 @@ export const LoadingScreen = ({}: PropsWithChildren<
   RootStackScreenProps<'Loading'>
 >) => {
   const [loadingState, setLoadingState] = useState<LoadingStates>();
+  const { initContext } = useWalletContext();
   const statusText = loadingState
     ? statusTextByState[loadingState]
     : "Preppin' the app...";
 
   useEffect(() => {
     const fetchData = async () => {
-      await AsyncStorage.getItem('mnemonic');
+      const value = await AsyncStorage.getItem('mnemonic');
+      if (value !== null) {
+        const isUserReady = isValidMnemonic(value);
+        if (isUserReady) {
+          setLoadingState('logged');
+          await initContext();
+          return;
+        }
+      }
+      setLoadingState('yetToOnboard');
     };
 
     if (!loadingState) {
