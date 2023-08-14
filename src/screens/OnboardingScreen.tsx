@@ -12,7 +12,7 @@ export const OnboardingScreen = ({
   const { initContext, wallet, web3Wallet } = useWalletContext();
   const [loadingWallet, setLoadingWallet] = useState(false);
   const [shouldRememberUser, setShouldRememberUser] = useState(false);
-  const [_, setMnemonic] = useState<string>();
+  const [mnemonic, setMnemonic] = useState<string>();
 
   // @TODO: move to loading screen
   useEffect(() => {
@@ -45,7 +45,12 @@ export const OnboardingScreen = ({
   const handleRememberMe = () => {
     setShouldRememberUser(prevState => !prevState);
   };
-  const loginWithMnemonic = async () => {};
+  const loginWithMnemonic = async () => {
+    setLoadingWallet(true);
+    await initContext({ saveInStorage: shouldRememberUser, mnemonic })
+      .then(() => setLoadingWallet(false))
+      .finally(() => navigation.navigate('Main'));
+  };
 
   const buttonText = isInit
     ? 'Wallet Ready 🚀'
