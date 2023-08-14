@@ -1,5 +1,6 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useWalletContext } from '../context/walletContext';
 import { RootStackScreenProps } from '../navigation';
@@ -11,6 +12,22 @@ export const OnboardingScreen = ({
   const { initContext, wallet, web3Wallet } = useWalletContext();
   const [loadingWallet, setLoadingWallet] = useState(false);
   const [shouldRememberUser, setShouldRememberUser] = useState(false);
+
+  // @TODO: move to loading screen
+  useEffect(() => {
+    (async () => {
+      const storedMnemonic = await AsyncStorage.getItem('mnemonic');
+      if (storedMnemonic) {
+        setLoadingWallet(true);
+        await initContext({
+          saveInStorage: shouldRememberUser,
+          mnemonic: storedMnemonic,
+        })
+          .then(() => setLoadingWallet(false))
+          .finally(() => navigation.navigate('Main'));
+      }
+    })();
+  }, []);
 
   const isInit = !!web3Wallet && !!wallet;
   const handleOnPress = async () => {
