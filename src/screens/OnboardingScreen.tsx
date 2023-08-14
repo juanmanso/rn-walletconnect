@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useWalletContext } from '../context/walletContext';
@@ -12,6 +12,7 @@ export const OnboardingScreen = ({
   const { initContext, wallet, web3Wallet } = useWalletContext();
   const [loadingWallet, setLoadingWallet] = useState(false);
   const [shouldRememberUser, setShouldRememberUser] = useState(false);
+  const [mnemonic, setMnemonic] = useState<string>();
 
   // @TODO: move to loading screen
   useEffect(() => {
@@ -44,6 +45,12 @@ export const OnboardingScreen = ({
   const handleRememberMe = () => {
     setShouldRememberUser(prevState => !prevState);
   };
+  const loginWithMnemonic = async () => {
+    setLoadingWallet(true);
+    await initContext({ saveInStorage: shouldRememberUser, mnemonic })
+      .then(() => setLoadingWallet(false))
+      .finally(() => navigation.navigate('Main'));
+  };
 
   const buttonText = isInit
     ? 'Wallet Ready 🚀'
@@ -53,8 +60,12 @@ export const OnboardingScreen = ({
 
   return (
     <Content containerStyle={styles.container}>
-      <ThemedText>Hello World!</ThemedText>
-      <TouchableOpacity onPress={handleRememberMe} style={styles.row}>
+      <ThemedText type="H1">Hello World!</ThemedText>
+      <TouchableOpacity
+        disabled={isInit || loadingWallet}
+        onPress={handleRememberMe}
+        style={styles.row}
+      >
         <View
           style={[styles.box, shouldRememberUser && styles.blueBackgroundColor]}
         />
@@ -62,6 +73,24 @@ export const OnboardingScreen = ({
       </TouchableOpacity>
       <TouchableOpacity onPress={handleOnPress} style={styles.button}>
         <ThemedText style={styles.whiteText}>{buttonText}</ThemedText>
+      </TouchableOpacity>
+      <ThemedText type="H1" style={{ marginTop: 20 }}>
+        Already onboard?
+      </ThemedText>
+      <TextInput
+        placeholder="Type in your mnemonic phrase"
+        onChangeText={setMnemonic}
+        style={[
+          styles.box,
+          { width: undefined, height: undefined, padding: 8 },
+        ]}
+      />
+      <TouchableOpacity
+        disabled={isInit || loadingWallet}
+        onPress={loginWithMnemonic}
+        style={[styles.button, { backgroundColor: '#AFAFAF' }]}
+      >
+        <ThemedText>Continue with your own mnemonic</ThemedText>
       </TouchableOpacity>
     </Content>
   );
