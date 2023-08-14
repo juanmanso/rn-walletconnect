@@ -19,7 +19,7 @@ export const OnboardingScreen = ({
     }
 
     setLoadingWallet(true);
-    await initContext()
+    await initContext({ saveInStorage: shouldRememberUser })
       .then(() => setLoadingWallet(false))
       .finally(() => navigation.navigate('Main'));
   };
