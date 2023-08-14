@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { RootStackScreenProps } from '../navigation';
@@ -15,10 +15,21 @@ const statusTextByState: Record<LoadingStates, string> = {
 export const LoadingScreen = ({}: PropsWithChildren<
   RootStackScreenProps<'Loading'>
 >) => {
-  const [loadingState, _] = useState<LoadingStates>();
+  const [loadingState, setLoadingState] = useState<LoadingStates>();
   const statusText = loadingState
     ? statusTextByState[loadingState]
     : "Preppin' the app...";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await AsyncStorage.getItem('mnemonic');
+    };
+
+    if (!loadingState) {
+      setLoadingState('fetchingLocalStorage');
+      fetchData();
+    }
+  }, [loadingState]);
 
   return (
     <Content containerStyle={styles.container}>
