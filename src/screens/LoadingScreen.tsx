@@ -7,7 +7,7 @@ import { Content, ThemedText } from '../components';
 type LoadingStates = 'fetchingLocalStorage' | 'logged' | 'yetToOnboard';
 
 const statusTextByState: Record<LoadingStates, string> = {
-  fetchingLocalStorage: "Preppin' the app...",
+  fetchingLocalStorage: 'Fetching some data...',
   logged: 'Logging in...',
   yetToOnboard: 'Redirecting to onboarding...',
 };
@@ -15,8 +15,10 @@ const statusTextByState: Record<LoadingStates, string> = {
 export const LoadingScreen = ({}: PropsWithChildren<
   RootStackScreenProps<'Loading'>
 >) => {
-  const [loadingState, _] = useState<LoadingStates>('fetchingLocalStorage');
-  const statusText = statusTextByState[loadingState];
+  const [loadingState, _] = useState<LoadingStates>();
+  const statusText = loadingState
+    ? statusTextByState[loadingState]
+    : "Preppin' the app...";
 
   return (
     <Content containerStyle={styles.container}>
