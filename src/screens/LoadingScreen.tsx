@@ -15,9 +15,9 @@ const statusTextByState: Record<LoadingStates, string> = {
   yetToOnboard: 'Redirecting to onboarding...',
 };
 
-export const LoadingScreen = ({}: PropsWithChildren<
-  RootStackScreenProps<'Loading'>
->) => {
+export const LoadingScreen = ({
+  navigation,
+}: PropsWithChildren<RootStackScreenProps<'Loading'>>) => {
   const [loadingState, setLoadingState] = useState<LoadingStates>();
   const { initContext } = useWalletContext();
   const statusText = loadingState
@@ -31,11 +31,14 @@ export const LoadingScreen = ({}: PropsWithChildren<
         const isUserReady = isValidMnemonic(value);
         if (isUserReady) {
           setLoadingState('logged');
-          await initContext();
+          await initContext().then(() => {
+            navigation.navigate('Main');
+          });
           return;
         }
       }
       setLoadingState('yetToOnboard');
+      navigation.navigate('Onboarding');
     };
 
     if (!loadingState) {
