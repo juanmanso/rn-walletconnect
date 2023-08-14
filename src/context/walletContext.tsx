@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Core } from '@walletconnect/core';
 import { ICore } from '@walletconnect/types';
 import { IWeb3Wallet } from '@walletconnect/web3wallet';
@@ -12,6 +13,7 @@ import { createWallet } from '../utils/wallet';
 
 interface InitProps {
   mnemonic?: string;
+  saveInStorage?: boolean;
 }
 
 // State variables only
@@ -26,7 +28,7 @@ interface WalletContextState {
 // that handle the state in some way
 interface WalletContext extends WalletContextState {
   initContext: (v?: InitProps) => Promise<void>;
-  initWallet: (v?: InitProps) => void;
+  initWallet: (v?: InitProps) => Promise<void>;
 }
 
 const INITIAL_STATE: WalletContextState = {
@@ -44,14 +46,33 @@ const [useContext, WalletContextProvider] =
 export const WalletProvider = ({ children }: PropsWithChildren) => {
   const [state, setState] = useState<WalletContextState>(INITIAL_STATE);
 
-  const initContext = async (props?: InitProps) =>
-    await createWeb3Wallet(state.web3Core)
-      .then(web3Wallet => setState(prevState => ({ ...prevState, web3Wallet })))
-      .then(() => initWallet({ mnemonic: props?.mnemonic }));
+  // @TODO: use KeyChain storage for improved security
+  const setMnemonic = async (mnemonic?: string) => {
+    if (mnemonic) {
+      try {
+        const value = await AsyncStorage.setItem('mnemonic', mnemonic);
+        return value !== null ? value : undefined;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
-  const initWallet = (props?: InitProps) => {
+  const initContext = async (props?: InitProps) => {
+    await createWeb3Wallet(state.web3Core).then(web3Wallet =>
+      setState(prevState => ({ ...prevState, web3Wallet })),
+    );
+    await initWallet(props);
+  };
+
+  const initWallet = async (props?: InitProps) => {
     const wallet = createWallet(props?.mnemonic);
     setState(prevState => ({ ...prevState, wallet }));
+    if (props?.saveInStorage) {
+      await setMnemonic(
+        props.mnemonic ? props.mnemonic : wallet.mnemonic.phrase,
+      ).catch(err => console.error('Error while setting mnemonic.\n\t' + err));
+    }
   };
 
   return (
