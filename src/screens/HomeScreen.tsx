@@ -1,6 +1,5 @@
 import React, { PropsWithChildren } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Content, ThemedText } from '../components/';
 import { useWalletContext } from '../context/walletContext';
@@ -10,12 +9,12 @@ import { RootNavigator } from '../navigation/utils';
 export const HomeScreen = ({}: PropsWithChildren<
   RootStackScreenProps<'Main'>
 >): JSX.Element => {
-  const { wallet } = useWalletContext();
+  const { cleanContextAndStorage, wallet } = useWalletContext();
   const address = wallet?.address ?? '';
-  const mnemonic = wallet?.mnemonic.phrase ?? '';
+  const mnemonic = wallet?.mnemonic?.phrase ?? '';
 
   const handleLogOut = async () => {
-    await AsyncStorage.removeItem('mnemonic').then(() =>
+    await cleanContextAndStorage().then(() =>
       RootNavigator.navigate('Onboarding'),
     );
   };

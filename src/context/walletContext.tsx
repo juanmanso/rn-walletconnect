@@ -27,6 +27,7 @@ interface WalletContextState {
 // because it holds any other option or fx
 // that handle the state in some way
 interface WalletContext extends WalletContextState {
+  cleanContextAndStorage: () => Promise<void>;
   initContext: (v?: InitProps) => Promise<void>;
   initWallet: (v?: InitProps) => Promise<void>;
 }
@@ -58,6 +59,13 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
+  const cleanContextAndStorage = async () => {
+    const mnemonicProm = AsyncStorage.removeItem('mnemonic');
+    Promise.allSettled([mnemonicProm]).then(() => {
+      setState(INITIAL_STATE);
+    });
+  };
+
   const initContext = async (props?: InitProps) => {
     if (!state.web3Wallet) {
       await createWeb3Wallet(state.web3Core).then(web3Wallet =>
@@ -80,7 +88,9 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <WalletContextProvider value={{ ...state, initContext, initWallet }}>
+    <WalletContextProvider
+      value={{ ...state, cleanContextAndStorage, initContext, initWallet }}
+    >
       {children}
     </WalletContextProvider>
   );
