@@ -9,11 +9,13 @@ import {
 
 import { RootNavigator } from './utils';
 import { HomeScreen } from '../screens/HomeScreen';
+import { LoadingScreen } from '../screens/LoadingScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
 
 export type RootStackParamList = {
   Main: undefined;
   Onboarding: undefined;
+  Loading: undefined;
 };
 
 export type RootStackNavigationProps<Route extends keyof RootStackParamList> =
@@ -36,7 +38,7 @@ const AppNavigator = () => {
   return (
     <Stack.Navigator
       // TODO: check if wallet was previously initiated
-      initialRouteName={'Onboarding'}
+      initialRouteName={'Loading'}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen
@@ -51,8 +53,16 @@ const AppNavigator = () => {
         name="Onboarding"
         component={OnboardingScreen}
         options={{
-          ...TransitionPresets.ModalPresentationIOS,
+          gestureEnabled: false,
           title: 'Onboarding',
+        }}
+      />
+      <Stack.Screen
+        name="Loading"
+        component={LoadingScreen}
+        options={{
+          ...TransitionPresets.ModalPresentationIOS,
+          title: 'Loading',
         }}
       />
     </Stack.Navigator>
