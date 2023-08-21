@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useWalletContext } from '../context/walletContext';
 import { RootStackScreenProps } from '../navigation';
 import { Content, ThemedText } from '../components';
+import { Input } from '../components/Input';
 
 export const OnboardingScreen = ({
   navigation,
@@ -77,13 +78,9 @@ export const OnboardingScreen = ({
       <ThemedText type="H1" style={{ marginTop: 20 }}>
         Already onboard?
       </ThemedText>
-      <TextInput
+      <Input
         placeholder="Type in your mnemonic phrase"
         onChangeText={setMnemonic}
-        style={[
-          styles.box,
-          { width: undefined, height: undefined, padding: 8 },
-        ]}
       />
       <TouchableOpacity
         disabled={isInit || loadingWallet}
